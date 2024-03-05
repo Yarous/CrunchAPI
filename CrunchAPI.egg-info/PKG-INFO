@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: CrunchAPI
+Version: 0.0.1
+Summary: This is a API module for CodeCrunch WEBSite!
+Home-page: Github.com/Yarous
+Author: Yarous
+Author-email: topecode2001@gmail.com
+Project-URL: GitHub, github.com/Yarous
+Keywords: files speedfiles
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: WINDOWS/LINUX/MACOS/OSX
+Requires-Python: >=3.6
+Description-Content-Type: Nothing here
+License-File: LICENSE
+Requires-Dist: requests>=2.25.1
+
+"# CrunchAPI" 
