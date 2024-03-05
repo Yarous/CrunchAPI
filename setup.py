@@ -5,7 +5,6 @@ def readme():
   with open('README.md', 'r') as f:
     return f.read()
 
-
 setup(
   name='CrunchAPI',
   version='0.0.1',
