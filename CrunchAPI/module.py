@@ -18,56 +18,26 @@ class Test:
     def getAllId(self): return [item.get('id') for item in self.fetch_data("/api/tests") or []]
 
     def addTest(self, testInfo):
-        if not isinstance(testInfo, dict): return ValueError("The argument passed is not a dict")        
-        if "description" in testInfo and "questions" in testInfo:
-            if isinstance(testInfo["questions"], list) and all(
-                "question_text" in q and "answers" in q and isinstance(q["answers"], list) 
-                and all("answer_text" in a and "is_correct" in a for a in q["answers"]) for q in testInfo["questions"]
-            ):
-                try:
-                    data_string = json.dumps(testInfo) 
-                    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                        s.connect((self.host, self.port))
-                        s.sendall(f"POST /api/addtest HTTP/1.1\r\nHost: {self.host}\r\nContent-Type: application/json\r\nContent-Length: {len(data_string)}\r\n\r\n{data_string}".encode())
-                        return b"".join(iter(lambda: s.recv(4096), b'')).decode().split('\r\n\r\n', 1)[1]
-                except Exception as e: return str(e)
-            else: return ValueError("JSON structure does not match the expected format")
-        else: return ValueError("JSON structure does not match the expected format")
+        if not isinstance(testInfo, dict): return ValueError("The argument passed is not a dict")
+
+        # Обновленная проверка структурной соответствия новому образу JSON
+        required_keys = ["testName", "testDescription", "question", "options", "selectedOption"]
+        if not all(key in testInfo for key in required_keys): return ValueError("JSON structure does not match the expected format")
+
+        if not (isinstance(testInfo["options"], list) and isinstance(testInfo["selectedOption"], int)): return ValueError("Invalid structure of 'options', 'selectedOption'")
+
+        try:
+            data_string = json.dumps(testInfo)
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((self.host, self.port))
+                s.sendall(f"POST /api/addtest HTTP/1.1\r\nHost: {self.host}\r\nContent-Type: application/json\r\nContent-Length: {len(data_string)}\r\n\r\n{data_string}".encode())
+                return b"".join(iter(lambda: s.recv(4096), b'')).decode().split('\r\n\r\n', 1)[1]
+        except Exception as e: return str(e)
 
 
 
 # Пример использования
-li = {
-    "description": "asd",
-    "questions": [
-        {
-            "answers": [
-                {
-                    "answer_text": "df",
-                    "is_correct": "true"
-                },
-                {
-                    "answer_text": "das",
-                    "is_correct": "false"
-                },
-                {
-                    "answer_text": "s",
-                    "is_correct": "false"
-                },
-                {
-                    "answer_text": "d",
-                    "is_correct": "false"
-                },
-                {
-                    "answer_text": "d",
-                    "is_correct": "false"
-                }
-            ],
-            "question_text": "asd"
-        }
-    ],
-    "testname": "liquor"
-}
+li = {'testName': 'name1111', 'testDescription': 'descr2', 'question': 'qst', 'options': ['pick 1', 'pick 2', 'pick 3', 'pick 4', 'pick 5'], 'selectedOption': 3}
 
 test = Test()
 print(test.addTest(li))
