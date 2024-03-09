@@ -1,5 +1,2 @@
-from CrunchAPI import Test
-
-test = Test()
-
-print(test.getAllId())  
+li = {"kyh": 1}
+print(type(li))
